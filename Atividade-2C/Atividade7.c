@@ -1,41 +1,40 @@
 #include <stdio.h>
 
-int multiplo(int n, int y, int x);
+int multiplo(int n, int k, int x);
 
 int main()
 {
-
     int n, k, x;
-    printf("Digite quantos somatorios\n");
+    printf("Digite quantos somatorios: ");
     scanf("%d", &n);
 
-    printf("Digite o numero que voce quer ver\n");
-    scanf(" %d", &k);
+    printf("Digite o numero que voce quer ver: ");
+    scanf("%d", &k);
 
-    printf("Digite o a partir de:\n");
-    scanf(" %d", &x);
+    printf("Digite a partir de: ");
+    scanf("%d", &x);
 
-    for
+    printf("O somatório é: %d\n", multiplo(n, k, x));
     return 0;
 }
 
 int multiplo(int n, int k, int x)
 {
-    if (x < k)
+    if (k == 0)
     {
         return 0;
     }
 
-    while (x % k != 0)
-    {
-        x++;
-    }
+    int somatorio = 0, contador = 0;
 
-    for (int i = 0; i < n; i++)
+    for (int i = x; contador < n; i++)
     {
-        if (x % k == 0)
+        if (i % k == 0)
         {
-
-        } 
+            somatorio += i;
+            contador++;
+        }
     }
+
+    return somatorio;
 }
