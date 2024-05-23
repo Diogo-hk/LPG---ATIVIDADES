@@ -6,11 +6,13 @@ void criarConjunto(int vetor[M], int escolha);
 void mostrarConjuntoTodo(int vetor[M][N]);
 int verificaNumeroRepetido(int vetor[], int numeroLegal);
 void inserirNoConjunto(int vetor[], int escolha);
-void removerDoConjunto(int vetor[M][N], int escolha, int contador);
+void removerDoConjunto(int vetor[M][N], int escolha);
 void unirConjunto(int vetor[M][N], int escolha, int escolha2);
 void intersecaoConjunto(int vetor[M][N], int escolha, int escolha2);
 void mostrarUmConjunto(int vetor[], int escolha);
 void buscarUmValor(int vetor[M][N], int escolha);
+
+int contador = 0;
 
 int main()
 {
@@ -26,14 +28,12 @@ int main()
         }
     }
 
-    int contador = 0;
-
-    while (escolha != 0)
+    while (escolha != 9)
     {
         printf("\n");
         printf("Gerenciamento de conjuntos\n\n");
         printf("Menu\n\n");
-        printf("[1] - Criar um novo conjunto vazio\n");
+        printf("[1] - Criar um novo conjunto\n");
         printf("[2] - Inserir dados em um conjunto\n");
         printf("[3] - Remover um conjunto\n");
         printf("[4] - Fazer a união entre dois conjuntos\n");
@@ -60,8 +60,7 @@ int main()
         case 3:
             printf("Digite o conjunto que voce quer apagar\n");
             scanf("%d", &escolha);
-            removerDoConjunto(vetor, escolha, contador);
-            contador--;
+            removerDoConjunto(vetor, escolha);
             break;
         case 4:
             printf("Digite o conjunto que voce quer unir\n");
@@ -73,7 +72,7 @@ int main()
         case 5:
             printf("Digite o conjunto que voce quer interseção\n");
             scanf("%d", &escolha);
-            printf("\n Digite o segundo conjunto que voce quer unir\n");
+            printf("\nDigite o segundo conjunto que voce quer unir\n");
             scanf(" %d", &escolha2);
             intersecaoConjunto(vetor, escolha, escolha2);
             break;
@@ -92,7 +91,6 @@ int main()
             break;
         case 9:
             return 0;
-            break;
         default:
             printf("\nINVÁLIDO, DIGITE NOVAMENTE\n\n\n");
             break;
@@ -103,9 +101,6 @@ int main()
 
 void buscarUmValor(int vetor[M][N], int escolha)
 {
-    if (escolha <= 0 || escolha > 5)
-        return;
-
     for (int i = 1; i < M; i++)
     {
         for (int j = 1; j < N; j++)
@@ -118,10 +113,6 @@ void buscarUmValor(int vetor[M][N], int escolha)
 
 void mostrarUmConjunto(int vetor[], int escolha)
 {
-
-    if (escolha <= 0 || escolha > 5)
-        return;
-
     printf("\n");
     printf("Esse é o seu conjunto: ");
     for (int i = 1; i < N; i++)
@@ -133,10 +124,6 @@ void mostrarUmConjunto(int vetor[], int escolha)
 
 void intersecaoConjunto(int vetor[M][N], int escolha, int escolha2)
 {
-
-    if (escolha <= 0 || escolha > 5 || escolha2 <= 0 || escolha2 > 5)
-        return;
-
     int conjuntoCriado = 0, soma = 1;
     for (int i = 1; i < M; i++)
     {
@@ -162,8 +149,28 @@ void intersecaoConjunto(int vetor[M][N], int escolha, int escolha2)
 
 void unirConjunto(int vetor[M][N], int escolha, int escolha2)
 {
-    if (escolha <= 0 || escolha > 5 || escolha2 <= 0 || escolha2 > 5)
+    int vetor1 = 0, vetor2 = 0;
+
+    for (int i = 1; i < N; i++)
+    {
+        if (vetor[escolha][i] != 0)
+        {
+            vetor1++;
+        }
+    }
+    for (int i = 1; i < N; i++)
+    {
+        if (vetor[escolha2][i] != 0)
+        {
+            vetor2++;
+        }
+    }
+
+    if ((vetor1 + vetor2) > (N - 1))
+    {
+        printf("Erro, conjunto maior do que pode ser criado\n");
         return;
+    }
 
     int conjuntoCriado = 0;
     for (int i = 1; i < M; i++)
@@ -190,41 +197,43 @@ void unirConjunto(int vetor[M][N], int escolha, int escolha2)
     }
 }
 
-void removerDoConjunto(int vetor[M][N], int escolha, int contador)
+void removerDoConjunto(int vetor[M][N], int escolha)
 {
-    if (vetor[escolha][1] == 0 || escolha <= 0 || escolha > 5)
+    if (vetor[escolha][1] == 0 || escolha <= 0 || escolha >= M)
     {
         printf("Vetor inexistente, por favor digite um valido\n");
         return;
     }
 
-    for (int i = escolha; i <= contador; i++)
+    // Shift conjuntos
+    for (int i = escolha; i < M - 1; i++)
     {
         for (int j = 1; j < N; j++)
         {
             vetor[i][j] = vetor[i + 1][j];
-            vetor[i + 1][j] = 0;
         }
     }
+
+    // Limpa o último conjunto
+    for (int j = 1; j < N; j++)
+    {
+        vetor[M - 1][j] = 0;
+    }
+
+    contador--;
 }
 
 void inserirNoConjunto(int vetor[], int escolha)
 {
     int tamanhoVetor = 0, numeroLegal;
 
-    if (vetor[escolha] == 0 || escolha <= 0 || escolha > 5)
-    {
-        printf("Conjunto '%d' nao criado, por favor crie\n");
-        return;
-    }
-
-    printf("Digite os valores para inserir\n");
     for (int i = 1; i < M; i++)
     {
         if (vetor[i] != 0)
             tamanhoVetor++;
     }
 
+    printf("Digite os valores para inserir\n");
     for (int i = tamanhoVetor + 1; i < M; i++)
     {
         scanf("%d", &numeroLegal);
@@ -234,7 +243,6 @@ void inserirNoConjunto(int vetor[], int escolha)
 
         if (verificaNumeroRepetido(vetor, numeroLegal) == 0)
             vetor[i] = numeroLegal;
-
         else
         {
             printf("Numero repetido, insira novamente\n");
@@ -258,7 +266,7 @@ int verificaNumeroRepetido(int vetor[], int numeroLegal)
 void criarConjunto(int vetor[], int escolha)
 {
     int numeroLegal = 0;
-    if (vetor[escolha] == 0 && escolha > 0 && escolha <= 5)
+    if (escolha > 0 && escolha < M)
     {
         printf("Digite os valores para o conjunto (0 para encerrar): ");
         for (int i = 1; i < M; i++)
@@ -273,11 +281,15 @@ void criarConjunto(int vetor[], int escolha)
                 printf("Número repetido, digite novamente: ");
                 i--;
             }
-            vetor[i] = numeroLegal;
+            else
+            {
+                vetor[i] = numeroLegal;
+            }
         }
     }
     else
         printf("INVALIDO\n");
+    return;
 }
 
 void mostrarConjuntoTodo(int vetor[M][N])
